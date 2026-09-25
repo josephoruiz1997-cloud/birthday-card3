@@ -113,28 +113,19 @@
       user-select: none;
     }
 
-    /* Balloon Float Animation */
-    @keyframes floatUpMobile {
-      0% {
-        transform: translateY(105vh) rotate(0deg);
-        opacity: 0.95;
-      }
-      100% {
-        transform: translateY(-15vh) rotate(14deg);
-        opacity: 0.9;
-      }
+    /* Subtle ambient floating sparkles */
+    @keyframes floatParticle {
+      0% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+      50% { opacity: 0.8; }
+      100% { transform: translateY(-70px) rotate(45deg); opacity: 0; }
     }
 
-    .floating-balloon {
-      position: fixed;
-      pointer-events: auto;
-      cursor: pointer;
+    .ambient-sparkle {
+      position: absolute;
+      pointer-events: none;
+      animation: floatParticle 4s ease-in-out infinite;
+      color: rgba(251, 191, 36, 0.7);
       user-select: none;
-      -webkit-user-select: none;
-      animation: floatUpMobile 11s linear infinite;
-      z-index: 35;
-      min-width: 48px;
-      min-height: 58px;
     }
 
     /* Color Glows */
@@ -154,12 +145,10 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-rose-500 selection:text-white relative overflow-x-hidden antialiased">
 
+  <!-- Ambient Glow Orbs -->
   <div id="ambient-orb-1" class="fixed -top-24 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-rose-600/25 rounded-full blur-3xl pointer-events-none transition-colors duration-1000"></div>
   <div id="ambient-orb-2" class="fixed top-1/3 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-pink-600/20 rounded-full blur-3xl pointer-events-none transition-colors duration-1000"></div>
   <div id="ambient-orb-3" class="fixed -bottom-24 left-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none transition-colors duration-1000"></div>
-
-  <!-- Balloon Container -->
-  <div id="balloon-container" class="fixed inset-0 pointer-events-none z-30 overflow-hidden"></div>
 
   <!-- Header Navigation -->
   <header class="relative z-40 max-w-5xl mx-auto px-3.5 py-3.5 sm:px-6 sm:py-4 flex items-center justify-between">
@@ -205,19 +194,20 @@
 
     <!-- Countdown Section -->
     <section class="text-center space-y-3 sm:space-y-4">
-      <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-900/90 border border-slate-700/60 text-[11px] sm:text-xs text-slate-300 backdrop-blur-md shadow-inner">
+      <!-- Romantic & Natural Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-rose-500/30 text-xs text-rose-200/95 backdrop-blur-md shadow-lg shadow-rose-950/40">
         <span class="relative flex h-2 w-2">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
         </span>
-        <span>Counting down for: <strong id="countdown-recipient-name" class="text-rose-300 font-semibold">Baby</strong> 💕</span>
+        <span id="countdown-badge-label" class="tracking-wide font-medium">Counting down to your midnight moment ✨</span>
       </div>
 
       <h2 id="countdown-title" class="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-serif bg-gradient-to-b from-white via-rose-100 to-slate-400 bg-clip-text text-transparent px-2">
         The Birthday Countdown
       </h2>
       <p id="countdown-subtitle" class="text-slate-400 text-xs sm:text-sm max-w-md mx-auto px-4">
-        Friday, September 25, 2026 • 12:00 AM (GMT-5)
+        Friday, September 25, 2026 • 12:00 AM (EDT)
       </p>
 
       <!-- 4-Box Wrap-Free Responsive Timer -->
@@ -253,10 +243,11 @@
       </div>
     </section>
 
+    <!-- 3D Interactive Envelope -->
     <section class="perspective-1000 flex flex-col items-center justify-center pt-2">
       <div class="text-center mb-3">
         <span class="inline-block px-3.5 py-1 rounded-full bg-slate-800/70 text-rose-200 text-[11px] tracking-wide uppercase font-semibold border border-slate-700/80 shadow">
-          Tap wax seal to open Baby's card
+          Tap wax seal to open card
         </span>
       </div>
 
@@ -269,7 +260,7 @@
           <div class="envelope-flap absolute top-0 left-0 right-0 h-32 sm:h-36 bg-gradient-to-b from-slate-800 to-slate-900 rounded-t-2xl z-20 border-b border-rose-500/30 flex items-center justify-center shadow-lg"
                style="clip-path: polygon(0 0, 100% 0, 50% 100%);">
             
-            <!-- Wax Seal Stamp with "B" Initial & Heart -->
+            <!-- Wax Seal Stamp with "B" Initial -->
             <button id="wax-seal" class="w-13 h-13 sm:w-14 sm:h-14 min-w-[50px] min-h-[50px] rounded-full bg-gradient-to-tr from-rose-600 via-pink-500 to-amber-400 shadow-xl border-2 border-rose-200 flex items-center justify-center -translate-y-2 transform active:scale-95 transition-transform" aria-label="Open Birthday Envelope">
               <span class="text-slate-950 font-serif font-black text-xl">B</span>
             </button>
@@ -303,9 +294,9 @@
       </div>
     </section>
 
+    <!-- Main Card Content Plaque -->
     <section id="full-card-section" class="pt-4 space-y-6 sm:space-y-8 transition-all duration-700">
       
-      <!-- Main Card Plaque -->
       <div id="main-card-plaque" class="relative rounded-3xl p-5 sm:p-8 md:p-10 bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl overflow-hidden glow-rose transition-all duration-500">
         
         <div class="absolute top-2.5 left-2.5 text-rose-400/30 text-xl font-serif">✦</div>
@@ -335,7 +326,7 @@
           <!-- Cake Activity -->
           <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 sm:p-5 text-center space-y-3 flex flex-col items-center justify-between relative shadow-inner">
             <div class="flex items-center justify-between w-full">
-              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Baby's Birthday Wish</span>
+              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Birthday Wish</span>
               <span id="cake-status-badge" class="px-2.5 py-1 text-[10px] rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium">Candles Lit 🔥</span>
             </div>
 
@@ -392,8 +383,8 @@
               <div id="scratch-secret-content" class="absolute inset-0 bg-gradient-to-tr from-rose-500 via-pink-600 to-amber-500 flex flex-col items-center justify-center p-3 text-center select-none text-white">
                 <span class="text-2xl">🎁</span>
                 <span class="text-[10px] uppercase tracking-wider font-semibold text-amber-200">Reunion Voucher</span>
-                <p id="scratch-secret-text" class="text-xs sm:text-sm font-bold mt-1 text-white drop-shadow leading-tight">
-                  Un abrazo infinito, una cena deliciosa y una celebración inolvidable juntitos 💕
+                <p id="scratch-secret-text" class="text-xs sm:text-sm font-bold mt-1 text-white drop-shadow leading-tight px-1">
+                  Un buen relaxing massage whenever you need to recharge, followed by sexy time and a home-cooked meal hecho por mí.
                 </p>
                 <span class="text-[9px] text-pink-100 mt-1 opacity-90">Valid anytime, anywhere</span>
               </div>
@@ -413,25 +404,10 @@
 
         </div>
 
-        <!-- Arcade Balloon Section -->
-        <div class="mt-6 pt-5 border-t border-slate-800/80 text-center space-y-3">
-          <div class="flex items-center justify-center space-x-1.5 text-rose-300">
-            <span>🎈</span>
-            <h4 class="font-bold text-xs uppercase tracking-wider">Balloon Pop For Baby</h4>
-            <span>🎈</span>
-          </div>
-          <p class="text-[11px] sm:text-xs text-slate-400 max-w-sm mx-auto">
-            Floating balloons are rising! Tap them to pop confetti & sweet sound chimes.
-          </p>
-          <div class="flex items-center justify-center gap-3">
-            <button id="spawn-balloons-btn" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 active:scale-95 text-xs font-semibold text-slate-200 border border-slate-700 shadow flex items-center space-x-1.5">
-              <span>🎈</span>
-              <span>Launch 5 Balloons</span>
-            </button>
-            <div class="min-h-[44px] text-xs bg-slate-900 border border-slate-800 px-3.5 rounded-xl text-slate-300 flex items-center">
-              Popped:&nbsp;<strong id="balloon-pop-counter" class="text-rose-400">0</strong>
-            </div>
-          </div>
+        <!-- Ambient Romantic Message Bottom Note -->
+        <div class="mt-6 pt-5 border-t border-slate-800/80 text-center space-y-1">
+          <p class="font-script text-xl sm:text-2xl text-rose-300">Con todo mi amor y cariño ✨</p>
+          <p class="text-[11px] text-slate-400">Can't wait to be together and celebrate in person.</p>
         </div>
 
       </div>
@@ -445,6 +421,7 @@
     </svg>
   </button>
 
+  <!-- Customization Sheet / Modal -->
   <div id="editor-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh] animate-in slide-in-from-bottom duration-300">
       
@@ -463,16 +440,16 @@
 
       <div class="p-4 sm:p-6 space-y-4 overflow-y-auto">
         <div class="space-y-1">
-          <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Recipient's Name</label>
+          <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Recipient Name / Nickname</label>
           <input id="input-recipient-name" type="text" value="Baby" 
                  class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-slate-800/90 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-400" />
         </div>
 
         <div class="space-y-1">
-          <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Target Date & Time (ISO / GMT-5)</label>
-          <input id="input-target-date" type="text" value="2026-09-25T00:00:00-05:00" 
+          <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Target Date & Time (ISO / EDT)</label>
+          <input id="input-target-date" type="text" value="2026-09-25T00:00:00-04:00" 
                  class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-slate-800/90 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-400" />
-          <p class="text-[10px] text-slate-400">Configured to: Friday, Sep 25, 2026 at 12:00 AM (GMT-5)</p>
+          <p class="text-[10px] text-slate-400">Configured to: Friday, Sep 25, 2026 at 12:00 AM (EDT / GMT-4)</p>
         </div>
 
         <div class="space-y-1">
@@ -483,7 +460,7 @@
 
         <div class="space-y-1">
           <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Secret Scratch-Off Prize</label>
-          <input id="input-scratch-secret" type="text" value="Un abrazo infinito, una cena deliciosa y una celebración inolvidable juntitos 💕" 
+          <input id="input-scratch-secret" type="text" value="Un buen relaxing massage whenever you need to recharge, followed by sexy time and a home-cooked meal hecho por mí." 
                  class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-slate-800/90 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-400" />
         </div>
 
@@ -525,6 +502,7 @@
   </div>
 
   <script>
+    /* Audio and Synthesizer */
     let audioCtx = null;
     let audioEnabled = true;
 
@@ -542,30 +520,6 @@
       if (navigator.vibrate) {
         try { navigator.vibrate(duration); } catch(e) {}
       }
-    }
-
-    function playBalloonPopSound() {
-      if (!audioEnabled) return;
-      try {
-        initAudio();
-        if (!audioCtx) return;
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(520, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.09);
-
-        gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.09);
-      } catch (e) {}
     }
 
     function playBlowCandleSound() {
@@ -666,19 +620,17 @@
       triggerHaptic(15);
     });
 
-    // Exact requested target: 12:00 AM Friday, Sep 25, 2026 (GMT-5)
-    const TARGET_TIME_ISO = "2026-09-25T00:00:00-05:00";
-    const TARGET_TIMESTAMP = new Date(TARGET_TIME_ISO).getTime();
+    // Exact requested target: 12:00 AM Friday, Sep 25, 2026 (EDT / GMT-4)
+    const TARGET_TIME_ISO = "2026-09-25T00:00:00-04:00";
 
     const cardState = {
       name: 'Baby',
       targetDate: TARGET_TIME_ISO,
       message: "Happy Birthday to my favorite person! 🎉🎂 Aunque estemos lejos hoy, sé que when we see each other we’ll pick up right where we left off and celebrate. Te quiero con todo mi corazón ✨💕",
-      scratchSecret: "Un abrazo infinito, una cena deliciosa y una celebración inolvidable juntitos 💕",
+      scratchSecret: "Un buen relaxing massage whenever you need to recharge, followed by sexy time and a home-cooked meal hecho por mí.",
       theme: 'rose',
       isEnvelopeOpen: false,
       candlesLit: true,
-      balloonPops: 0,
       forcedCelebration: false
     };
 
@@ -698,18 +650,35 @@
     }
 
     function syncStateToDOM() {
-      document.getElementById('countdown-recipient-name').innerText = cardState.name;
-      document.getElementById('card-inner-name').innerText = cardState.name + '! 💕';
-      document.getElementById('card-hero-name').innerText = 'Dearest ' + cardState.name + ' 💕';
+      const badgeLabel = document.getElementById('countdown-badge-label');
+      if (badgeLabel) badgeLabel.innerText = "Counting down to your midnight moment ✨";
 
-      document.getElementById('card-inner-preview-text').innerText = `"${cardState.message}"`;
-      document.getElementById('card-full-message').innerText = `"${cardState.message}"`;
-      document.getElementById('scratch-secret-text').innerText = cardState.scratchSecret;
+      const innerName = document.getElementById('card-inner-name');
+      if (innerName) innerName.innerText = cardState.name + '! 💕';
 
-      document.getElementById('input-recipient-name').value = cardState.name;
-      document.getElementById('input-target-date').value = cardState.targetDate;
-      document.getElementById('input-card-message').value = cardState.message;
-      document.getElementById('input-scratch-secret').value = cardState.scratchSecret;
+      const heroName = document.getElementById('card-hero-name');
+      if (heroName) heroName.innerText = 'Dearest ' + cardState.name + ' 💕';
+
+      const previewText = document.getElementById('card-inner-preview-text');
+      if (previewText) previewText.innerText = `"${cardState.message}"`;
+
+      const fullMsg = document.getElementById('card-full-message');
+      if (fullMsg) fullMsg.innerText = `"${cardState.message}"`;
+
+      const secretText = document.getElementById('scratch-secret-text');
+      if (secretText) secretText.innerText = cardState.scratchSecret;
+
+      const inputName = document.getElementById('input-recipient-name');
+      if (inputName) inputName.value = cardState.name;
+
+      const inputTarget = document.getElementById('input-target-date');
+      if (inputTarget) inputTarget.value = cardState.targetDate;
+
+      const inputMsg = document.getElementById('input-card-message');
+      if (inputMsg) inputMsg.value = cardState.message;
+
+      const inputSecret = document.getElementById('input-scratch-secret');
+      if (inputSecret) inputSecret.value = cardState.scratchSecret;
 
       applyTheme(cardState.theme);
     }
@@ -777,7 +746,7 @@
 
         celebrationFired = false;
         titleEl.innerText = "The Birthday Countdown";
-        subTitleEl.innerText = "Friday, September 25, 2026 • 12:00 AM (GMT-5)";
+        subTitleEl.innerText = "Friday, September 25, 2026 • 12:00 AM (EDT)";
 
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1048,92 +1017,6 @@
       initScratchCard();
     });
 
-    // Floating Balloon System
-    const balloonContainer = document.getElementById('balloon-container');
-    const popCounter = document.getElementById('balloon-pop-counter');
-    const balloonColors = ['#f43f5e', '#fb7185', '#ec4899', '#8b5cf6', '#eab308', '#f59e0b'];
-
-    function createBalloon() {
-      const balloon = document.createElement('div');
-      balloon.className = 'floating-balloon';
-
-      const color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
-      const randomLeft = Math.random() * 80 + 8;
-      const randomDuration = Math.random() * 5 + 8;
-
-      balloon.style.left = `${randomLeft}%`;
-      balloon.style.animationDuration = `${randomDuration}s`;
-
-      balloon.innerHTML = `
-        <div style="position: relative; width: 48px; height: 60px;">
-          <svg viewBox="0 0 50 65" width="48" height="60">
-            <defs>
-              <radialGradient id="grad-${color.replace('#','')}" cx="35%" cy="30%" r="65%">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
-                <stop offset="40%" stop-color="${color}" stop-opacity="0.95"/>
-                <stop offset="100%" stop-color="${color}"/>
-              </radialGradient>
-            </defs>
-            <ellipse cx="25" cy="27" rx="23" ry="26" fill="url(#grad-${color.replace('#','')})" />
-            <polygon points="25,51 22,57 28,57" fill="${color}" />
-            <path d="M25,57 Q28,62 25,67 Q22,72 25,77" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" fill="none"/>
-          </svg>
-        </div>
-      `;
-
-      function handlePop(e) {
-        e.stopPropagation();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        popBalloon(balloon, clientX, clientY, color);
-      }
-
-      balloon.addEventListener('click', handlePop);
-      balloon.addEventListener('touchstart', handlePop, { passive: true });
-
-      balloonContainer.appendChild(balloon);
-
-      setTimeout(() => {
-        if (balloon.parentElement) balloon.remove();
-      }, randomDuration * 1000);
-    }
-
-    function popBalloon(balloonEl, x, y, color) {
-      playBalloonPopSound();
-      triggerHaptic(25);
-      cardState.balloonPops++;
-      popCounter.innerText = cardState.balloonPops;
-
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 16,
-          startVelocity: 18,
-          spread: 70,
-          origin: {
-            x: (x || window.innerWidth / 2) / window.innerWidth,
-            y: (y || window.innerHeight / 2) / window.innerHeight
-          },
-          colors: [color, '#ffffff', '#fda4af']
-        });
-      }
-
-      balloonEl.remove();
-    }
-
-    document.getElementById('spawn-balloons-btn').addEventListener('click', () => {
-      triggerHaptic(20);
-      for (let i = 0; i < 5; i++) {
-        setTimeout(createBalloon, i * 350);
-      }
-      showToast("5 Balloons launched for Baby! 🎈", "💕");
-    });
-
-    setInterval(() => {
-      if (document.querySelectorAll('.floating-balloon').length < 5) {
-        createBalloon();
-      }
-    }, 3200);
-
     document.getElementById('poppers-btn').addEventListener('click', () => {
       initAudio();
       triggerMegaCelebration();
@@ -1172,10 +1055,15 @@
     });
 
     saveCustomizerBtn.addEventListener('click', () => {
-      cardState.name = document.getElementById('input-recipient-name').value.trim() || 'Baby';
-      cardState.targetDate = document.getElementById('input-target-date').value.trim() || TARGET_TIME_ISO;
-      cardState.message = document.getElementById('input-card-message').value.trim();
-      cardState.scratchSecret = document.getElementById('input-scratch-secret').value.trim();
+      const inputName = document.getElementById('input-recipient-name');
+      const inputTarget = document.getElementById('input-target-date');
+      const inputMsg = document.getElementById('input-card-message');
+      const inputSecret = document.getElementById('input-scratch-secret');
+
+      cardState.name = inputName ? inputName.value.trim() || 'Baby' : 'Baby';
+      cardState.targetDate = inputTarget ? inputTarget.value.trim() || TARGET_TIME_ISO : TARGET_TIME_ISO;
+      cardState.message = inputMsg ? inputMsg.value.trim() : cardState.message;
+      cardState.scratchSecret = inputSecret ? inputSecret.value.trim() : cardState.scratchSecret;
 
       syncStateToDOM();
       startCountdown();
@@ -1188,11 +1076,16 @@
 
     // Native Web Share API + Clipboard Fallback
     copyShareLinkBtn.addEventListener('click', async () => {
+      const inputName = document.getElementById('input-recipient-name');
+      const inputTarget = document.getElementById('input-target-date');
+      const inputMsg = document.getElementById('input-card-message');
+      const inputSecret = document.getElementById('input-scratch-secret');
+
       const shareData = {
-        name: document.getElementById('input-recipient-name').value.trim() || 'Baby',
-        targetDate: document.getElementById('input-target-date').value.trim() || TARGET_TIME_ISO,
-        message: document.getElementById('input-card-message').value.trim(),
-        scratchSecret: document.getElementById('input-scratch-secret').value.trim(),
+        name: inputName ? inputName.value.trim() || 'Baby' : 'Baby',
+        targetDate: inputTarget ? inputTarget.value.trim() || TARGET_TIME_ISO : TARGET_TIME_ISO,
+        message: inputMsg ? inputMsg.value.trim() : cardState.message,
+        scratchSecret: inputSecret ? inputSecret.value.trim() : cardState.scratchSecret,
         theme: cardState.theme
       };
 
@@ -1235,7 +1128,6 @@
       syncStateToDOM();
       startCountdown();
       initScratchCard();
-      for (let i = 0; i < 3; i++) setTimeout(createBalloon, i * 400);
     });
   </script>
 </body>
